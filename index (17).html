@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Rizd'or PHONE</title>
+<meta name="description" content="Rizd'or PHONE:みんなで遊ぶお絵かき伝言ゲーム">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Rizd'or PHONE">
+<meta property="og:title" content="Rizd'or PHONE">
+<meta property="og:description" content="みんなで遊ぶお絵かき伝言ゲーム。スマホで参加しよう！">
+<meta property="og:url" content="https://rizdor-60.github.io/christmas/">
+<meta property="og:image" content="https://rizdor-60.github.io/christmas/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root{--rd:#e63946;--gn:#2ecc71;--gd:#ffd166;--t:#fff8ee;--d:#a9c4b2;--p:rgba(12,40,28,.88);--ln:rgba(255,209,102,.35)}
+*{box-sizing:border-box;margin:0}
+html{background:#07170f;overscroll-behavior:none;-webkit-text-size-adjust:100%}
+body{background:radial-gradient(120% 90% at 50% 0,#14452e,#07170f 60%,#14080c) fixed #07170f;color:var(--t);font:16px/1.5 "Hiragino Sans","Yu Gothic",sans-serif;overscroll-behavior:none}
+#sn{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+#gl{position:fixed;top:0;left:0;right:0;height:34px;z-index:6;pointer-events:none}
+#gl::before{content:"";position:absolute;left:0;right:0;top:7px;border-top:1px solid rgba(255,255,255,.25)}
+#gl i{position:absolute;width:11px;height:16px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:var(--c);box-shadow:0 0 12px 3px var(--c);animation:tw 1.5s infinite alternate}
+@keyframes tw{from{opacity:.35}to{opacity:1}}
+.kb #gl,.kb #sn{display:none}
+.hero-on #gl{display:none}
+main{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:44px 14px 30px}
+@media(min-width:700px){main{max-width:720px}}
+.host main{max-width:1400px}
+.top{display:flex;justify-content:space-between;align-items:center;min-height:30px}
+.hero-on main{padding-top:0}
+.hero-on .logo{display:none}
+.hero-on .top{position:absolute;right:12px;top:10px;z-index:3}
+.hero{margin:0 -14px;position:relative}
+.hero img{display:block;width:100%;height:auto;-webkit-mask-image:linear-gradient(#000 74%,transparent);mask-image:linear-gradient(#000 74%,transparent)}
+.hero+.card{margin-top:-46px;position:relative}
+.host .hero{max-width:760px;margin:0 auto}
+.card{background:var(--p);border:1px solid var(--ln);border-radius:16px;padding:16px;margin:12px 0;backdrop-filter:blur(14px) saturate(160%);border-top-color:rgba(255,255,255,.2);animation:in .5s cubic-bezier(.22,1,.36,1) backwards}
+@keyframes in{from{opacity:0;transform:translateY(14px) scale(.985);filter:blur(6px)}}
+h2{font:700 clamp(22px,5vw,32px)/1.25 Georgia,"Hiragino Mincho ProN",serif;letter-spacing:-.02em}
+.host h2{font-size:clamp(26px,3vw,40px)}
+.logo{font:700 14px Georgia,serif;letter-spacing:.2em;color:var(--gd);text-shadow:0 0 12px rgba(255,209,102,.7)}
+.small{color:var(--d);font-size:13px;letter-spacing:.02em}.mono{font-family:ui-monospace,Menlo,monospace}
+input,button{font:inherit;color:var(--t)}
+input{width:100%;background:#06130c;border:1px solid var(--ln);border-radius:10px;padding:12px;margin:6px 0;font-size:18px}
+button{background:#143d2a;border:1px solid var(--gd);border-radius:10px;padding:11px 14px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .12s ease-out,box-shadow .2s,opacity .2s}
+button:active:not(:disabled){transform:scale(.97)}button:disabled{opacity:.4}button.on{background:var(--rd)}
+.pri{background:var(--rd);border-color:#ffb3b8;font-weight:700}
+.dng{border-color:var(--rd);color:#ffb3b8}
+.sm{padding:4px 10px;font-size:13px;border-radius:16px}
+.row2{display:flex;gap:8px;margin:8px 0}.row2>*{flex:1}
+.tg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px 0}
+.tg button{padding:14px 0;font-weight:700}.tg button.on{box-shadow:0 0 14px var(--rd);border-color:#ffb3b8}
+.hd{display:flex;justify-content:space-between;align-items:baseline;font:700 18px Georgia,serif}
+.bar{height:8px;border-radius:4px;background:rgba(255,255,255,.14);overflow:hidden;margin:8px 0}
+.bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--rd),var(--gd));transition:width .25s linear}
+.w{background:#fff;color:#222}.w .small{color:#555}
+.pimg{width:100%;border-radius:12px;background:#fff;margin:8px 0;min-height:120px}
+.mem{display:flex;flex-wrap:wrap;gap:6px}.mem span{background:rgba(255,255,255,.1);border-radius:20px;padding:2px 12px}
+/* drawing */
+.cvw{position:relative;width:100%;aspect-ratio:4/3;margin:8px 0;box-shadow:0 0 0 3px var(--gd);border-radius:12px;overflow:hidden;background:#fff}
+.cvw canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;user-select:none;-webkit-user-select:none}
+.tools{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:8px 0}
+.tools button{padding:8px 0;font-size:20px;line-height:1.1}.tools button small{display:block;font-size:10px;opacity:.8}
+.sl{display:flex;align-items:center;gap:10px;margin:2px 0;font-size:13px}
+.sl span{width:34px}.sl b{width:40px;text-align:right}
+input[type=range]{flex:1;padding:0;margin:0;height:34px;background:none;border:0;accent-color:#ffd166}
+#pv{width:44px;height:44px;border-radius:50%;background:#fff;display:grid;place-items:center;flex:none;border:2px solid var(--gd)}
+#pv i{display:block;border-radius:50%}
+.pal{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin:8px 0}
+.pal i{height:34px;border-radius:50%;border:3px solid rgba(255,255,255,.35);cursor:pointer}.pal i.on{border-color:var(--gd);box-shadow:0 0 12px var(--gd);transform:scale(1.12)}
+.pal input{height:34px;padding:0;margin:0;border:3px solid rgba(255,255,255,.35);border-radius:50%;background:none}
+/* vote */
+.vt{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.vt button{font:700 22px/1.3 sans-serif;padding:26px 0;border-radius:18px}
+.vt span{display:block;font-size:44px}.vt em{display:block;font:600 13px sans-serif;opacity:.85}
+.vt .up{background:#1c7a45;border-color:#7dffb0}.vt .dn{background:#7a5a1c;border-color:#ffd166}
+.pp{animation:pp .25s}@keyframes pp{50%{transform:scale(1.15)}}
+.shk{animation:sk .3s}@keyframes sk{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.gift{font-size:80px;text-align:center;animation:bn 1.4s infinite}@keyframes bn{50%{transform:translateY(-12px) rotate(6deg)}}
+/* host */
+.cfg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:10px 0}.cfg label{font-size:13px;color:var(--d)}
+.g8{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tc{background:rgba(6,19,12,.7);border:1px solid var(--ln);border-radius:14px;padding:12px;min-height:90px}.tc b{color:var(--gd)}
+.pc{display:inline-flex;align-items:center;gap:3px;background:rgba(255,255,255,.1);border-radius:20px;padding:2px 4px 2px 12px;margin:2px}
+.pc button{padding:0 7px;font-size:12px;border-radius:12px}
+.big{font:700 clamp(48px,9vw,120px)/1 Georgia,serif;color:var(--gd);text-shadow:0 0 28px rgba(255,209,102,.7);font-variant-numeric:tabular-nums}
+.pg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.pg .bar{height:14px}
+.pulse{animation:pl 1s infinite alternate}@keyframes pl{to{box-shadow:0 0 30px var(--gd);transform:scale(1.04)}}
+.sel{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0;align-items:center}.sel button{padding:5px 12px;font-size:14px}
+/* 発表: クリスマスカード */
+#stg{display:flex;flex-direction:column;height:calc(100vh - 250px);min-height:380px;border-radius:22px;padding:12px;border:12px solid transparent;background:linear-gradient(#fffaf0,#fff3e0) padding-box,repeating-linear-gradient(45deg,#e63946 0 16px,#fff 16px 32px) border-box;color:#2a2a2a;box-shadow:0 0 40px rgba(255,209,102,.35)}
+#sh{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:8px;border-bottom:2px dashed #d9b36a}
+.rb{font:700 clamp(18px,2.2vw,30px) Georgia,"Hiragino Mincho ProN",serif;color:#a4252f}.rb small{font:13px sans-serif;color:#777;margin-left:8px}
+.bls{display:flex;gap:7px}.bl{width:15px;height:21px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:#ddd;transition:.4s}.bl.on{background:var(--c);box-shadow:0 0 14px 3px var(--c)}
+#tl{flex:1;overflow:auto;padding:14px 8px}
+.it{position:relative;display:flex;align-items:flex-start;gap:14px;margin:0 0 6px}
+.it.R{flex-direction:row-reverse}
+.ic{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:700 18px Georgia,serif;color:#fff;background:radial-gradient(circle at 35% 30%,#fff9,var(--c) 55%);box-shadow:0 3px 8px #0003}
+.bub{position:relative;max-width:72%;padding:14px 22px;border-radius:20px;font-size:clamp(18px,2.2vw,30px);background:#eaf7ef;border:3px solid #2ecc71}
+.it.L .bub{border-bottom-left-radius:4px}
+.bub::before{content:"🌿";position:absolute;left:-8px;top:-14px;font-size:22px}
+.tag{display:inline-block;font:600 13px sans-serif;background:#fff;border:2px dashed #d9b36a;border-radius:6px;padding:0 8px;margin-bottom:4px;color:#7a5a1c}
+.pol{position:relative;background:#fff;padding:10px 10px 8px;border-radius:6px;box-shadow:0 8px 22px #0003;transform:rotate(var(--r,0deg));max-width:min(560px,68%)}
+.pol img{display:block;width:100%;border:1px solid #eee}
+.pol .tag{margin:6px 0 0}
+.pol::before{content:"";position:absolute;top:-12px;left:50%;width:90px;height:24px;margin-left:-45px;background:rgba(230,57,70,.55);transform:rotate(-3deg)}
+.cn{height:26px;margin-left:21px;width:0;border-left:3px dotted #d9b36a}
+.it.new .bub,.it.new .pol{animation:unwrap .9s cubic-bezier(.2,1.3,.4,1)}
+.it.new::after{content:"";position:absolute;left:50%;top:30%;width:20px;height:20px;border-radius:50%;box-shadow:0 0 60px 40px rgba(255,209,102,.7);animation:fx .9s ease-out forwards;pointer-events:none}
+.bow{position:absolute;top:-22px;left:50%;margin-left:-20px;font-size:40px;z-index:2;animation:bw 1.3s ease-out forwards}
+@keyframes unwrap{0%{opacity:0;transform:scale(.2) rotate(-14deg)}60%{opacity:1;transform:scale(1.08) rotate(2deg)}100%{transform:scale(1) rotate(var(--r,0deg))}}
+@keyframes fx{from{opacity:1;transform:scale(.3)}to{opacity:0;transform:scale(3)}}
+@keyframes bw{0%{transform:scale(1.4)}60%{opacity:1}100%{transform:translateY(-40px) scale(.6) rotate(30deg);opacity:0}}
+.cmp2{display:grid;grid-template-columns:1fr 70px 1fr;gap:10px;align-items:center;margin-top:10px}
+.cmp2 .lb{font:700 18px sans-serif;color:#a4252f;text-align:center;margin-bottom:6px}
+.cmp2 .env{background:#eaf7ef;border:4px solid #2ecc71;border-radius:22px;padding:28px 18px;font:700 clamp(26px,3.6vw,52px)/1.3 Georgia,"Hiragino Mincho ProN",serif;text-align:center;box-shadow:0 8px 22px #0002}
+.cmp2 .mid{font-size:54px;text-align:center;animation:bn 1.4s infinite;color:#e63946}
+.cmp2 .pol{max-width:none;--r:1.5deg}
+.lights{position:relative;display:flex;height:40px;border-radius:20px;overflow:hidden;background:#ddd;margin:16px 0 8px}
+.lights i{display:block;height:100%;transition:width .35s}.lights::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 14px 50%,rgba(255,255,255,.75) 0 4px,transparent 5px) 0 0/28px 100%;pointer-events:none}
+.vn{display:flex;justify-content:space-between;align-items:center;font:700 clamp(30px,4vw,56px) Georgia,serif}
+#vr{text-align:center;font:700 clamp(28px,4vw,54px) Georgia,"Hiragino Mincho ProN",serif;color:#a4252f;min-height:1.3em;animation:pop .6s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{from{opacity:0;transform:scale(.5)}}
+.fl{position:fixed;bottom:0;font-size:46px;pointer-events:none;z-index:9;animation:fu 2.2s ease-out forwards}
+@keyframes fu{to{transform:translateY(-75vh) rotate(20deg);opacity:0}}
+#cf{position:fixed;inset:0;z-index:10;pointer-events:none}
+@media(prefers-reduced-motion:reduce){#gl i,.pulse,.fl,.gift,.mid{animation:none}.it.new::after,.bow{display:none}}
+</style></head>
+<body><canvas id="sn"></canvas><div id="gl"></div><canvas id="cf"></canvas>
+<main><div class="top"><div class="logo">RIZD'OR ✦ PHONE</div><button id="lv" class="sm dng" hidden onclick="leave()">退出</button></div><div id="app"></div></main>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+const CFG={apiKey:"AIzaSyCMAJ2NkKb9R1c9gNt2E5n1Xs6lCmpk3Kk",authDomain:"rizdor-quiz.firebaseapp.com",databaseURL:"https://rizdor-quiz-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"rizdor-quiz",appId:"1:711328313566:web:0d1ecbe62affd7f486d24f"};
+firebase.initializeApp(CFG);
+const db=firebase.database(),TS=firebase.database.ServerValue.TIMESTAMP,R=p=>db.ref('tel/'+p);
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const HOST=/host/.test(location.hash+location.search);addEventListener('hashchange',()=>location.reload());
+if(HOST)document.body.classList.add('host');
+const PROMPTS=['煙突に挟まったサンタ','筋トレするトナカイ','クリスマスケーキを丸飲みする犬','サンタに説教するトナカイ','雪だるまのダイエット','ツリーに登る猫','プレゼントを間違えたサンタ','スキーで滑るペンギン','コタツで寝るサンタ','靴下に入りきらない象','ツリーの星になりたいヒトデ','チキンを奪い合う家族','サンタの帽子をかぶったカピバラ','雪合戦をするゴリラ','トナカイに乗り遅れたサンタ','赤鼻が取れたルドルフ','イルミネーションに感電する人','ケーキのイチゴを狙うカラス','サンタのバイト面接','サーフィンするサンタ','クリスマスにひとりで鍋','雪の中で踊るパンダ','サンタを待ちくたびれた子ども','ソリを引くダックスフンド','ツリーの下で寝落ちするパパ','雪の結晶を食べるカエル','マフラーを巻いたキリン','クリスマスプレゼントがパンツ','かまくらに住むサンタ','プレゼントを配るロボット','氷の上で転ぶペンギン','サンタが宅配便のドライバー','ジングルベルを歌うカラス','暖炉の前で乾杯するクマ','ホームパーティで踊るサンタ','雪だるまを溶かす太陽'];
+const COLS=['#000000','#ffffff','#e63946','#2ecc71','#ffd166','#2b6fff','#4cc9f0','#8b5a2b','#ffcba4','#ff8fc8','#9b5de5','#ff9f43'],BC=['#e63946','#ffd166','#2ecc71','#4cc9f0'],MAXT=12;
+let AUTO=true,off=0,ST=null,PL={},PLok=false,CFok=false,RO=[],CF={tText:30,tDraw:60,tAns:30,turns:6,teams:8,voteSec:10,voteCap:5},DONE={},SH=null,DR=null,SUB=false,PK='',me=JSON.parse(localStorage.tel_me||'null'),team=0,PAD=null,AN=-1;
+db.ref('.info/serverTimeOffset').on('value',s=>off=s.val()||0);
+const now=()=>Date.now()+off,ttype=t=>t===0?'text':t%2?'draw':'ans';
+R('state').on('value',s=>{const o=ST;ST=s.val();if(ST&&(!o||o.turn!==ST.turn)){SUB=false;watchDone(ST.turn)}if(!ST)DONE={};render()});
+R('players').on('value',s=>{PL=s.val()||{};PLok=true;render()});
+R('roster').on('value',s=>{RO=s.val()||[];render()});
+R('cfg').on('value',s=>{Object.assign(CF,s.val()||{});CFok=true;render()});
+R('show').on('value',s=>{SH=s.val();HOST?hSel():render()});
+function watchDone(t){DR&&DR.off();DR=R('done/'+t);DR.on('value',s=>{DONE=s.val()||{};if(me&&DONE[me.id]&&!SUB){SUB=true;PK='';render()}upd()})}
+const roster=t=>(RO&&RO[t])||[],total=()=>{let n=0;for(let t=1;t<=MAXT;t++)n+=roster(t).length;return n};
+const hero=on=>document.body.classList.toggle('hero-on',on),HERO='<div class="hero"><img src="ogp.png" alt="Rizd\'or PHONE"></div>';
+function render(){HOST?hRender():pRender()}
+function upd(){HOST?hUpd():pUpd()}
+
+// ================= 参加者 =================
+function pRender(){const a=$('#app');if(!PLok||!CFok)return;
+  if(me&&!PL[me.id]){localStorage.removeItem('tel_me');me=null}
+  $('#lv').hidden=!me;
+  if(!me){hero(true);const k='entry'+CF.teams+(ST&&ST.phase);if(PK!==k){PK=k;team=0;a.innerHTML=HERO+`<div class="card"><h2>参加する</h2><p class="small">${ST&&ST.phase!=='lobby'?'ゲーム進行中です。入室すると、次のゲームから参加できます。':'チームを選んで、ニックネームを入れてね'}</p><div class="tg">${Array.from({length:CF.teams},(_,i)=>`<button onclick="pickT(${i+1},this)">チーム${i+1}</button>`).join('')}</div><input id="nm" maxlength="10" placeholder="ニックネーム(10文字まで)"><button class="pri" style="width:100%" onclick="join()">参加する 🎄</button><p id="er" class="small" style="color:#ffb3b8"></p></div>`}return}
+  const st=ST||{phase:'lobby'},mi=roster(me.team).indexOf(me.id);hero(st.phase==='lobby');
+  if(st.phase==='lobby'){const k='lobby'+Object.keys(PL).filter(u=>PL[u].team===me.team).sort().join();if(PK!==k){PK=k;const mem=Object.values(PL).filter(p=>p.team===me.team);a.innerHTML=HERO+`<div class="card"><h2>チーム${me.team}</h2><p class="small">${esc(me.name)} さんで入室中。ゲーム開始を待ってね</p><div class="mem" style="margin-top:10px">${mem.map(p=>`<span>${esc(p.name)}</span>`).join('')}</div><p class="small" style="margin-top:10px">リロードしても戻れます。チームを変えたいときは、右上の「退出」からやり直してね。</p></div>`}return}
+  if(mi<0){if(PK!=='out'){PK='out';a.innerHTML=`<div class="card"><h2>観戦モード</h2><p class="small">このゲームの開始時には参加していなかったので、次のゲームをお待ちください。</p></div>`}return}
+  if(st.phase==='play'){const k='play'+st.turn+SUB;if(PK!==k){PK=k;PAD=null;a.innerHTML=SUB?`<div class="hd"><b>TURN ${st.turn+1} / ${st.turns}</b></div><div class="card"><h2>提出しました ✓</h2><p class="small">みんなが終わるまで待ってね</p><p id="pg" class="small" style="margin-top:8px"></p></div>`:playHTML(st);if(!SUB)loadPrev(st,mi);pUpd()}return}
+  if(st.phase==='show'){const k='show'+(SH&&SH.open)+(SH&&SH.key);if(PK!==k){PK=k;if(SH&&SH.open){VU={up:0,dn:0};const c=SH.cap||5;a.innerHTML=`<div class="card"><h2>投票タイム！</h2><p class="small">1人 ${c} 回まで押せるよ。よく考えて押そう</p><div class="vt"><button class="up" onclick="vote(1,this)"><span>👍</span>いいね！<em id="lu">あと${c}回</em></button><button class="dn" onclick="vote(0,this)"><span>🤔</span>微妙…<em id="ld">あと${c}回</em></button></div><div class="bar"><i id="bar"></i></div></div>`}else a.innerHTML=`<div class="card"><div class="gift">🎁</div><h2 style="text-align:center">発表中！</h2><p class="small" style="text-align:center">スクリーンに注目！</p></div>`}}}
+function pickT(i,b){team=i;document.querySelectorAll('.tg button').forEach(x=>x.classList.remove('on'));b.classList.add('on')}
+async function join(){const n=$('#nm').value.trim().slice(0,10);if(!team||!n){$('#er').textContent='チームとニックネームを入れてね';return}
+  const id='u'+Math.random().toString(36).slice(2,10);await R('players/'+id).set({name:n,team,ts:TS});me={id,name:n,team};localStorage.tel_me=JSON.stringify(me);PK='';render()}
+function leave(){if(!me||!confirm('退出しますか？(ゲーム中の場合、このゲームには戻れません)'))return;R('players/'+me.id).set(null);localStorage.removeItem('tel_me');me=null;SUB=false;PK='';render()}
+function albumOf(t,mi){const N=roster(me.team).length;return(((mi-t)%N)+N)%N}
+function playHTML(st){const t=st.turn,ty=ttype(t),head=`<div class="hd"><b>TURN ${t+1} / ${st.turns}</b><span id="tm" class="mono"></span></div><div class="bar"><i id="bar"></i></div>`;
+  if(ty==='text')return head+`<div class="card"><h2>お題を考えよう</h2><input id="tx" maxlength="40" placeholder="例:煙突に挟まったサンタ"><div class="row2"><button onclick="rnd()">🎲 ランダム生成</button><button class="pri" onclick="submit()">決定</button></div></div>`;
+  if(ty==='draw')return head+`<div class="card w" style="margin:6px 0"><span class="small">お題</span> <b id="prev" style="font-size:20px">…</b></div><div class="cvw"><canvas id="cv"></canvas><canvas id="ov"></canvas></div>
+<div class="tools">${[['pen','✏️','ペン'],['er','🧽','消す'],['fill','🪣','塗る'],['line','╱','直線'],['rect','▭','四角'],['ell','◯','円']].map(([k,i,n])=>`<button data-t="${k}" onclick="PAD.tool('${k}')">${i}<small>${n}</small></button>`).join('')}</div>
+<div class="sl"><div id="pv"><i></i></div><div style="flex:1"><div class="sl"><span>太さ</span><input type="range" min="2" max="48" value="8" oninput="PAD.sz(this.value)"></div><div class="sl"><span>濃さ</span><input type="range" min="10" max="100" value="100" oninput="PAD.al(this.value)"><b id="alv">100%</b></div></div></div>
+<div class="pal">${COLS.map(c=>`<i style="background:${c}" onclick="PAD.col('${c}',this)"></i>`).join('')}<input type="color" value="#000000" oninput="PAD.col(this.value)" title="好きな色"></div>
+<div class="row2"><button onclick="PAD.undo()">↩ 戻す</button><button onclick="PAD.redo()">↪ 進む</button><button onclick="PAD.clear()">🗑</button><button class="pri" style="flex:1.5" onclick="submit()">提出</button></div>`;
+  return head+`<div class="card"><div class="small">この絵は何を表している？</div><img id="pimg" class="pimg" alt=""><input id="tx" maxlength="40" placeholder="答えを入力"><button class="pri" style="width:100%" onclick="submit()">決定</button></div>`}
+async function loadPrev(st,mi){const t=st.turn,ty=ttype(t);if(ty==='draw')initPad(t);if(t===0)return;
+  const v=(await R(`alb/${me.team}/${albumOf(t,mi)}/${t-1}`).get()).val(),it=v||{k:'t',v:'？？？'};
+  if(PK.slice(0,4)!=='play'||ST.turn!==t)return;
+  if(ty==='draw'){const e=$('#prev');if(e)e.textContent=it.k==='t'?it.v:'？？？'}else{const e=$('#pimg');if(e&&it.k==='i')e.src=it.v}}
+function rnd(){$('#tx').value=PROMPTS[Math.random()*PROMPTS.length|0]}
+function fill(x,px,py,col,al){const W=640,H=480,im=x.getImageData(0,0,W,H),d=im.data,sx=Math.max(0,Math.min(W-1,px|0)),sy=Math.max(0,Math.min(H-1,py|0)),i0=(sy*W+sx)*4,tr=d[i0],tg=d[i0+1],tb=d[i0+2],
+  cr=parseInt(col.slice(1,3),16),cg=parseInt(col.slice(3,5),16),cb=parseInt(col.slice(5,7),16),seen=new Uint8Array(W*H),st=[sy*W+sx];
+  while(st.length){const n=st.pop();if(seen[n])continue;const i=n*4;if(Math.abs(d[i]-tr)+Math.abs(d[i+1]-tg)+Math.abs(d[i+2]-tb)>60)continue;seen[n]=1;const xx=n%W;if(xx>0)st.push(n-1);if(xx<W-1)st.push(n+1);if(n>=W)st.push(n-W);if(n<W*(H-1))st.push(n+W)}
+  for(let n=0;n<W*H;n++)if(seen[n]){const i=n*4;d[i]=d[i]*(1-al)+cr*al;d[i+1]=d[i+1]*(1-al)+cg*al;d[i+2]=d[i+2]*(1-al)+cb*al}
+  x.putImageData(im,0,0)}
+function initPad(t){const c=$('#cv'),o=$('#ov');if(!c)return;const W=640,H=480;c.width=o.width=W;c.height=o.height=H;const x=c.getContext('2d',{willReadFrequently:true}),y=o.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,W,H);
+  let tool='pen',col='#000000',sz=8,al=1,dr=false,p0=null,pl=null,U=[],Rd=[];
+  const pv=()=>{const i=$('#pv i');if(i){const e=tool==='er';i.style.width=i.style.height=Math.max(3,Math.min(40,sz*.9))+'px';i.style.background=e?'#fff':col;i.style.opacity=e?1:al;i.style.boxShadow=e?'0 0 0 1px #999':'none'}};
+  const snap=()=>{U.push(x.getImageData(0,0,W,H));if(U.length>15)U.shift();Rd=[]};
+  const draft=()=>{try{localStorage['tel_d'+t]=exportImg(c)}catch(e){}};
+  const pos=e=>{const r=o.getBoundingClientRect();return[(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height]};
+  const sty=()=>{y.strokeStyle=y.fillStyle=tool==='er'?'#fff':col;y.lineWidth=sz;y.lineCap=y.lineJoin='round'};
+  const shape=b=>{y.clearRect(0,0,W,H);sty();const a=p0;y.beginPath();if(tool==='line'){y.moveTo(a[0],a[1]);y.lineTo(b[0],b[1])}else if(tool==='rect')y.rect(a[0],a[1],b[0]-a[0],b[1]-a[1]);else y.ellipse((a[0]+b[0])/2,(a[1]+b[1])/2,Math.abs(b[0]-a[0])/2||.5,Math.abs(b[1]-a[1])/2||.5,0,0,7);y.stroke()};
+  o.onpointerdown=e=>{e.preventDefault();o.setPointerCapture(e.pointerId);const p=pos(e);
+    if(tool==='fill'){snap();fill(x,p[0],p[1],col,al);draft();return}
+    snap();dr=true;p0=pl=p;o.style.opacity=tool==='er'?1:al;y.clearRect(0,0,W,H);sty();
+    if(tool==='pen'||tool==='er'){y.beginPath();y.moveTo(p[0],p[1]);y.lineTo(p[0]+.01,p[1]);y.stroke()}};
+  o.onpointermove=e=>{if(!dr)return;const p=pos(e);if(tool==='pen'||tool==='er'){y.beginPath();y.moveTo(pl[0],pl[1]);y.lineTo(p[0],p[1]);y.stroke();pl=p}else shape(p)};
+  o.onpointerup=o.onpointercancel=()=>{if(!dr)return;dr=false;x.globalAlpha=tool==='er'?1:al;x.drawImage(o,0,0);x.globalAlpha=1;y.clearRect(0,0,W,H);draft()};
+  PAD={tool(k){tool=k;document.querySelectorAll('.tools button').forEach(b=>b.classList.toggle('on',b.dataset.t===k));pv()},
+    col(v,b){col=v;if(tool==='er')PAD.tool('pen');document.querySelectorAll('.pal i').forEach(i=>i.classList.remove('on'));if(b&&b.tagName==='I')b.classList.add('on');pv()},
+    sz(v){sz=+v;pv()},al(v){al=v/100;pv();const l=$('#alv');if(l)l.textContent=v+'%'},
+    undo(){const h=U.pop();if(h){Rd.push(x.getImageData(0,0,W,H));x.putImageData(h,0,0);draft()}},
+    redo(){const h=Rd.pop();if(h){U.push(x.getImageData(0,0,W,H));x.putImageData(h,0,0);draft()}},
+    clear(){snap();x.fillStyle='#fff';x.fillRect(0,0,W,H);draft()}};
+  PAD.tool('pen');const d=localStorage['tel_d'+t];if(d){const im=new Image();im.onload=()=>x.drawImage(im,0,0,W,H);im.src=d}}
+function blankImg(){const c=document.createElement('canvas');c.width=640;c.height=480;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,640,480);return exportImg(c)}
+function exportImg(c){const o=document.createElement('canvas');o.width=500;o.height=Math.round(500*c.height/c.width);o.getContext('2d').drawImage(c,0,0,o.width,o.height);let d=o.toDataURL('image/webp',.6);if(d.indexOf('data:image/webp')!==0)d=o.toDataURL('image/jpeg',.6);return d}
+async function submit(){if(SUB||!ST||ST.phase!=='play')return;SUB=true;const t=ST.turn,ty=ttype(t),mi=roster(me.team).indexOf(me.id),i=albumOf(t,mi);let k,v;
+  if(ty==='draw'){k='i';const cv=$('#cv');v=cv?exportImg(cv):blankImg()}else{k='t';v=(($('#tx')||{}).value||'').trim().slice(0,40)||'？？？'}
+  try{localStorage.removeItem('tel_d'+t)}catch(e){}
+  PK='';render();await db.ref('tel').update({[`alb/${me.team}/${i}/${t}`]:{by:me.id,n:me.name,k,v},[`done/${t}/${me.id}`]:1})}
+let NU=0,ND=0,VU={up:0,dn:0};
+function vote(u,b){if(!SH||!SH.open||now()>SH.until)return;const k=u?'up':'dn',cap=SH.cap||5;
+  if(VU[k]>=cap){b.classList.remove('shk');void b.offsetWidth;b.classList.add('shk');return}
+  VU[k]++;u?NU++:ND++;navigator.vibrate&&navigator.vibrate(30);b.classList.remove('pp');void b.offsetWidth;b.classList.add('pp');const e=$(u?'#lu':'#ld');if(e)e.textContent=VU[k]>=cap?'上限です':'あと'+(cap-VU[k])+'回'}
+setInterval(()=>{if(!HOST&&me&&(NU||ND)&&SH&&SH.key){const u=NU,d=ND,cap=SH.cap||5;NU=ND=0;u&&R(`vote/${SH.key}/u/${me.id}/up`).transaction(c=>Math.min(cap,(c||0)+u));d&&R(`vote/${SH.key}/u/${me.id}/dn`).transaction(c=>Math.min(cap,(c||0)+d))}},500);
+function pUpd(){if(!ST||!me)return;const pg=$('#pg');if(pg){const m=roster(me.team);pg.textContent=`チーム提出 ${m.filter(u=>DONE[u]).length} / ${m.length}人`}}
+
+// ================= 時計 =================
+setInterval(()=>{if(!ST)return;const rem=ST.tStart+ST.dur*1000-now();
+  if(ST.phase==='play'){const s=Math.max(0,Math.ceil(rem/1000)),e=$('#tm')||$('#hbig'),b=$('#bar');if(e)e.textContent=s;if(b)b.style.width=Math.max(0,Math.min(100,rem/(ST.dur*10)))+'%';
+    if(!HOST&&rem<=0&&!SUB&&me&&roster(me.team).indexOf(me.id)>=0)submit();
+    if(HOST&&AN!==ST.turn&&AUTO&&(rem<=-2500||(total()&&Object.keys(DONE).length>=total()&&rem<ST.dur*1000-1500))){AN=ST.turn;nextTurn()}}
+  if(SH&&SH.open&&!HOST){const b=$('#bar');if(b)b.style.width=Math.min(100,Math.max(0,(SH.until-now())/(CF.voteSec*10)))+'%'}},200);
+
+// ================= 司会 =================
+let SEL=null,ALB=[],SS=0,VR=null,VT=null,VC={up:0,dn:0},SHOWN={},ANIM=false;
+function hRender(){const a=$('#app');if(!PLok||!CFok)return;const st=ST||{phase:'lobby'};hero(st.phase==='lobby');
+  if(st.phase==='lobby'){if(PK!=='hl'){PK='hl';const f=(k,l,n,mn,mx)=>`<label>${l}<input type="number" ${k==='teams'?'id="cf1"':''} min="${mn}" max="${mx}" step="${k==='turns'?2:1}" value="${CF[k]}" onchange="cfg('${k}',this.value)"></label>`;
+    a.innerHTML=HERO+`<div class="card"><h2>ゲーム設定</h2><div class="cfg">${f('teams','チーム数',0,1,MAXT)}${f('turns','総ターン数(偶数)',0,2,12)}${f('tText','お題(秒)',0,5,300)}${f('tDraw','お絵かき(秒)',0,5,300)}${f('tAns','回答(秒)',0,5,300)}${f('voteSec','投票時間(秒)',0,5,60)}${f('voteCap','投票の上限(1人あたり回数)',0,1,30)}</div><div class="row2"><button class="pri" onclick="start()">ゲーム開始</button><button class="dng" onclick="kickAll()">参加者を全員退出</button></div></div><div id="tg" class="g8"></div>`}hUpd();return}
+  if(st.phase==='play'){const k='hp'+st.turn;if(PK!==k){PK=k;a.innerHTML=`<div class="card"><div class="hd"><span>TURN ${st.turn+1} / ${st.turns}:${['お題を書こう','お絵かきタイム！','回答タイム！'][st.turn===0?0:st.turn%2?1:2]}</span></div><div style="display:flex;align-items:center;gap:24px"><div class="big" id="hbig">0</div><div style="flex:1"><div class="bar" style="height:16px"><i id="bar"></i></div></div></div></div><div id="pg" class="pg"></div><div class="row2"><button id="nx" class="pri" onclick="nextTurn()">次のターンへ進む ▶</button><label class="small" style="flex:none;align-self:center"><input type="checkbox" ${AUTO?'checked':''} onchange="AUTO=this.checked" style="width:auto"> 全員完了で自動進行</label><button class="dng" onclick="resetGame()">ゲームをリセット</button></div>`}hUpd();return}
+  if(st.phase==='show'){if(PK!=='hs'){PK='hs';a.innerHTML=`<div id="sel"></div><div id="stg"><div id="sh"></div><div id="tl"></div></div><div class="row2"><button onclick="resetGame()" class="dng" style="flex:none">ゲームをリセット</button><span class="small" style="align-self:center">Space / → で次へ、← で戻る</span></div>`}hSel();hStage()}}
+function hUpd(){const st=ST||{phase:'lobby'};
+  if(st.phase==='lobby'){const g=$('#tg');if(!g)return;g.innerHTML=Array.from({length:CF.teams},(_,i)=>i+1).map(t=>{const m=Object.keys(PL).filter(u=>PL[u].team===t);return `<div class="tc"><b>チーム${t}</b> <span class="small">${m.length}人</span><div style="margin-top:6px">${m.map(u=>`<span class="pc">${esc(PL[u].name)}<button onclick="mv('${u}',-1)">◀</button><button onclick="mv('${u}',1)">▶</button><button onclick="kick('${u}')">✕</button></span>`).join('')}</div></div>`}).join('')}
+  if(st.phase==='play'){const g=$('#pg');if(!g)return;g.innerHTML=Array.from({length:MAXT},(_,i)=>i+1).map(t=>{const m=roster(t),d=m.filter(u=>DONE[u]).length;return m.length?`<div class="tc"><b>チーム${t}</b>:${d} / ${m.length}人 完了<div class="bar"><i style="width:${d/m.length*100}%;transition:none"></i></div></div>`:''}).join('');
+    const nx=$('#nx');if(nx)nx.classList.toggle('pulse',total()>0&&Object.keys(DONE).length>=total())}}
+function mv(id,d){const N=CF.teams;R('players/'+id+'/team').set(((PL[id].team-1+d+N)%N)+1)}
+function kick(id){R('players/'+id).set(null)}
+async function cfg(k,v){v=+v||0;const lim={teams:[1,MAXT],turns:[2,12],tText:[5,300],tDraw:[5,300],tAns:[5,300],voteSec:[5,60],voteCap:[1,30]}[k];v=Math.max(lim[0],Math.min(lim[1],v));if(k==='turns')v=Math.round(v/2)*2;
+  if(k==='teams'){const up={};Object.keys(PL).forEach(u=>{if(PL[u].team>v)up['players/'+u+'/team']=v});if(Object.keys(up).length&&!confirm('範囲外のチームの参加者を、チーム'+v+'に移動します'))return;if(Object.keys(up).length)await R('').update(up)}
+  await R('cfg/'+k).set(v);PK='';render()}
+async function start(){const ro={};for(let t=1;t<=CF.teams;t++){const ids=Object.keys(PL).filter(u=>PL[u].team===t).sort((a,b)=>(PL[a].ts||0)-(PL[b].ts||0)||(a<b?-1:1));if(ids.length)ro[t]=ids}
+  if(!Object.keys(ro).length)return alert('参加者がいません');AN=-1;SS=0;SEL=null;SHOWN={};
+  await db.ref('tel').update({roster:ro,alb:null,done:null,vote:null,show:null,state:{phase:'play',turn:0,turns:CF.turns,tStart:TS,dur:CF.tText}})}
+async function nextTurn(){const s=ST;if(!s||s.phase!=='play')return;if(s.turn+1>=s.turns){await R('state/phase').set('show');return}const t=s.turn+1;await R('state').update({turn:t,tStart:TS,dur:t%2?CF.tDraw:CF.tAns})}
+async function resetGame(){if(!confirm('ゲームをリセットして、ロビーに戻します(参加者は残ります)'))return;clearTimeout(VT);SEL=null;PK='';await db.ref('tel').update({state:null,roster:null,alb:null,done:null,vote:null,show:null})}
+async function kickAll(){if(!confirm('参加者を全員退出させます'))return;await R('players').set(null)}
+function hSel(){const e=$('#sel');if(!e)return;let h='';for(let t=1;t<=MAXT;t++){const m=roster(t);if(!m.length)continue;h+=`<div class="sel"><b style="margin-right:6px">🎄 チーム${t}</b>${m.map((u,i)=>`<button class="${SEL&&SEL.team===t&&SEL.album===i?'on':''}" onclick="pick(${t},${i})">${esc((PL[u]||{}).name||'—')}${SHOWN[t+'_'+i]?' ✓':''}</button>`).join('')}</div>`}e.innerHTML=h}
+async function pick(t,i){clearTimeout(VT);SEL={team:t,album:i};SS=0;ANIM=false;ALB=(await R(`alb/${t}/${i}`).get()).val()||[];if(!Array.isArray(ALB))ALB=Object.assign([],ALB);await R('show').set(null);hSel();hStage()}
+const okImg=v=>/^data:image\/(webp|jpeg|png);base64,[A-Za-z0-9+\/=]+$/.test(v);
+function items(){const T=ST.turns,o=[];for(let t=0;t<T;t++){let it=ALB[t]||{k:'t',v:'(未提出)',n:'—'};if(it.k==='i'&&!okImg(it.v))it={k:'t',v:'(画像なし)',n:it.n};o.push(it)}return o}
+function hStage(){const sh=$('#sh'),tl=$('#tl');if(!sh)return;if(!SEL){sh.innerHTML='';tl.innerHTML='<h2 style="text-align:center;margin-top:12%;color:#a4252f">🎁 上のボタンから、発表する人を選んでね</h2>';return}
+  const T=ST.turns,its=items(),st=(PL[roster(SEL.team)[SEL.album]]||{}).name||'—',shown=Math.min(SS,T);
+  sh.innerHTML=`<div class="rb">🎁 ${esc(st)}さんのアルバム<small>チーム${SEL.team}</small></div><div class="bls">${its.map((_,i)=>`<i class="bl${i<shown?' on':''}" style="--c:${BC[i%4]}"></i>`).join('')}</div>`;
+  if(SS<=T){tl.innerHTML=its.slice(0,SS).map((it,s)=>{const nw=ANIM&&s===SS-1,c=`style="--c:${BC[s%4]};--r:${s%2?1.6:-1.6}deg"`,cn=s?'<div class="cn"></div>':'';
+    return cn+(it.k==='t'?`<div class="it L${nw?' new':''}" ${c}><div class="ic">${s+1}</div><div class="bub">${nw?'<span class="bow">🎀</span>':''}<span class="tag">${s===0?'✏️ 最初のお題':'💬 回答'}・${esc(it.n)}</span><br><b>「${esc(it.v)}」</b></div></div>`:`<div class="it R${nw?' new':''}" ${c}><div class="ic">${s+1}</div><div class="pol">${nw?'<span class="bow">🎀</span>':''}<img src="${it.v}" alt=""><span class="tag">🎨 ${esc(it.n)} のイラスト</span></div></div>`)}).join('')||'<h2 style="text-align:center;margin-top:12%;color:#a4252f">Space キーでスタート ✨</h2>';tl.scrollTo({top:tl.scrollHeight,behavior:'smooth'});return}
+  const f=its[0],l=its[T-1];tl.innerHTML=`<div class="cmp2"><div><div class="lb">✏️ 最初のお題</div><div class="env">${esc(f.v)}</div></div><div class="mid">➜</div><div><div class="lb">🎨 最後の絵</div><div class="pol">${l.k==='i'?`<img src="${l.v}" alt="">`:`<div class="env">${esc(l.v)}</div>`}</div></div></div>
+<div class="lights"><i id="gu" style="background:#2ecc71;width:50%"></i><i id="gd" style="background:#e63946;width:50%"></i></div><div class="vn"><span>👍 <b id="cu">0</b></span><span id="vtm" class="mono" style="color:#a4252f"></span><span>🤔 <b id="cd">0</b></span></div><div id="vr"></div>`;vUpd()}
+function vUpd(){const u=VC.up,d=VC.dn,s=u+d||1,a=$('#cu');if(a){a.textContent=u;$('#cd').textContent=d;$('#gu').style.width=(u+d?u/s*100:50)+'%';$('#gd').style.width=(u+d?d/s*100:50)+'%'}}
+async function startVote(){const key=SEL.team+'_'+SEL.album,cap=CF.voteCap,ms=CF.voteSec*1000+500;await R('vote/'+key).set(null);VC={up:0,dn:0};await R('show').set({key,open:true,cap,until:now()+ms});SHOWN[key]=1;hSel();VR&&VR.off();VR=R('vote/'+key+'/u');
+  VR.on('value',s=>{const v=s.val()||{};let u=0,d=0;for(const id in v){u+=Math.min(cap,v[id].up||0);d+=Math.min(cap,v[id].dn||0)}for(let k=0;k<Math.min(8,u-VC.up);k++)fl('👍');for(let k=0;k<Math.min(8,d-VC.dn);k++)fl('🤔');VC={up:u,dn:d};vUpd()});
+  const t0=now()+ms,iv=setInterval(()=>{const e=$('#vtm'),r=Math.ceil((t0-now())/1000);if(!e||r<=0){clearInterval(iv);if(e)e.textContent='終了！';return}e.textContent=r},200);
+  clearTimeout(VT);VT=setTimeout(()=>{R('show/open').set(false);const e=$('#vr'),u=VC.up,d=VC.dn;if(e){e.textContent=u>d*1.5?'🎉 大好評！':d>u*1.5?'🤔 う〜ん…':'😄 いい勝負！';if(u>=d)burst()}},ms)}
+function fl(e){const s=document.createElement('span');s.className='fl';s.textContent=e;s.style.left=(5+Math.random()*90)+'%';document.body.appendChild(s);setTimeout(()=>s.remove(),2300)}
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches,cf=$('#cf'),cx=cf.getContext('2d');let PA=[],cr=0;
+function burst(n=160){if(RM)return;cf.width=innerWidth;cf.height=innerHeight;for(let i=0;i<n;i++){const L=i%2;PA.push({x:L?innerWidth:0,y:innerHeight*.85,vx:(L?-1:1)*(4+Math.random()*9),vy:-(9+Math.random()*13),w:6+Math.random()*7,c:['#e63946','#ffd166','#2ecc71','#fff','#4cc9f0'][i%5],r:Math.random()*6,vr:Math.random()*.4-.2})}if(!cr)cl()}
+function cl(){cr=1;cx.clearRect(0,0,cf.width,cf.height);PA=PA.filter(p=>p.y<cf.height+30);for(const p of PA){p.x+=p.vx;p.y+=p.vy;p.vy+=.28;p.vx*=.99;p.r+=p.vr;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.w/2,-p.w/4,p.w,p.w/2);cx.restore()}PA.length?requestAnimationFrame(cl):(cr=0,cx.clearRect(0,0,cf.width,cf.height))}
+addEventListener('keydown',e=>{if(!HOST||!ST||ST.phase!=='show'||!SEL)return;const T=ST.turns;
+  if(e.code==='Space'||e.code==='ArrowRight'){e.preventDefault();if(SS<=T){SS++;ANIM=true;hStage();if(SS===T+1){burst(60);startVote()}}}
+  else if(e.code==='ArrowLeft'){e.preventDefault();if(SS>0){if(SS===T+1){clearTimeout(VT);R('show/open').set(false)}SS--;ANIM=false;hStage()}}});
+
+// ================= キーボード対策・雪 =================
+addEventListener('focusin',e=>{if(/INPUT|TEXTAREA/.test(e.target.tagName)&&e.target.type!=='range'&&e.target.type!=='color')document.body.classList.add('kb')});
+addEventListener('focusout',()=>setTimeout(()=>{const a=document.activeElement;if(!a||!/INPUT|TEXTAREA/.test(a.tagName)){document.body.classList.remove('kb');scrollTo(0,0)}},80));
+(()=>{const gl=$('#gl');for(let i=0;i<32;i++){const b=document.createElement('i');b.style.cssText=`--c:${BC[i%4]};left:${i/31*98+1}%;top:${6+Math.abs(Math.sin(i/31*Math.PI*7))*9}px;animation-delay:${(i%4)*.4}s`;gl.appendChild(b)}
+  const c=$('#sn'),x=c.getContext('2d');let W=0,H,F=[];
+  const init=()=>{W=c.width=innerWidth;H=c.height=innerHeight;F=Array.from({length:Math.min(90,W*H/12000|0)},()=>({x:Math.random()*W,y:Math.random()*H,r:1+Math.random()*2.4,v:.4+Math.random(),p:Math.random()*7}))};
+  const fr=()=>{x.clearRect(0,0,W,H);x.fillStyle='rgba(255,255,255,.8)';for(const f of F){f.y+=f.v;f.p+=.02;f.x+=Math.sin(f.p)*.5;if(f.y>H){f.y=-5;f.x=Math.random()*W}x.beginPath();x.arc(f.x,f.y,f.r,0,7);x.fill()}requestAnimationFrame(fr)};
+  init();addEventListener('resize',()=>{if(innerWidth!==W)init()});if(!RM)fr()})();
+</script></body></html>
